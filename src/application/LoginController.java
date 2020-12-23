@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import serverConection.ConnectionManager;
 
 public class LoginController {
+	
 	private LoginModel loginModel = new LoginModel();
 	
 	@FXML
@@ -19,11 +20,11 @@ public class LoginController {
 	private String username;
 	
 	@FXML
-	private TextField clearPasswordBox;
+	private TextField clearPasswordBox; // This shows the unmasked password
 	private String password;
 	
 	@FXML
-	private PasswordField passwordBox;
+	private PasswordField passwordBox; // This shows the masked password
 	
 	@FXML
 	private AnchorPane anchorPane;
@@ -44,6 +45,7 @@ public class LoginController {
 		this.loginModel.setConnectionManager(connection);
 	}
 	
+	// This handles the showing or masking the password's characters
 	@FXML
 	void toggleMask() {
 		if (this.passwordBox.isDisabled()) {
@@ -61,13 +63,11 @@ public class LoginController {
 		}
 	}
 	
+	// This function starts the login process
 	@FXML
 	void startLogin() {
 		this.username = this.usernameBox.getText();
 		this.password = (this.passwordBox.isDisabled() ? this.clearPasswordBox.getText() : this.passwordBox.getText());
-		
-		this.username = "us_4_1"; // a - debugging reasons
-		this.password = "4414"; // AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 		Alert alert;
 		
 		this.loggedUsr = loginModel.validateUser(this.username, this.password);
@@ -89,6 +89,7 @@ public class LoginController {
         assert anchorPane != null : "fx:id=\"anchorPane\" was not injected: check your FXML file 'Login.fxml'.";
 	}
 	
+	// This function closes the window
 	@FXML
 	void closeWindow() {
 		Stage stage = (Stage) anchorPane.getScene().getWindow();

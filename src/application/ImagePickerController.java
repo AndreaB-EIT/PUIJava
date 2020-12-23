@@ -30,9 +30,9 @@ public class ImagePickerController {
     void onAccept(ActionEvent event) {
     	Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
     	if (idImageURL.getText()!=null && !idImageURL.getText().equals(""))
-    		{
+		{
     		image = new Image(idImageURL.getText(), false);
-    		}
+		}
     		
 		stage.close();
     }

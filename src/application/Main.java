@@ -1,24 +1,14 @@
 package application;
 	
 import java.io.IOException;
-import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
-//import org.omg.CORBA.portable.InputStream;
-
-import application.news.Article;
-import application.news.Categories;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import serverConection.ConnectionManager;
 import serverConection.exceptions.AuthenticationError;
-import serverConection.exceptions.ServerCommunicationError;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.fxml.FXMLLoader;
@@ -49,6 +39,7 @@ public class Main extends Application {
 			Properties prop = buildServerProperties();
 			ConnectionManager connection = new ConnectionManager(prop);
 			//Connecting as public (anonymous) for your group
+			// connection.setAnonymousAPIKey("DEV_TEAM_4414"); // Putting the group API key filters the articles
 			connection.setAnonymousAPIKey(""/*Put your group API Key here*/);
 		//Login without login form:
 			//	connection.login("Reader2", "reader2"); //User: Reader2 and password "reader2" 
@@ -57,8 +48,7 @@ public class Main extends Application {
 		//	controller.setUsr(user);
 			Scene scene = new Scene(root);
 			
-			controller.setConnectionManager(connection);		
-			
+			controller.setConnectionManager(connection);
 			
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			// primaryStage.initStyle(StageStyle.UNDECORATED); // With this, no upper bar with the X and the other icons
@@ -71,7 +61,6 @@ public class Main extends Application {
 			Logger.getGlobal().log(Level.SEVERE, "Error in loging process");
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

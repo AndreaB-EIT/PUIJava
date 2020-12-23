@@ -170,10 +170,8 @@ class NewsReaderModel {
 				this.articles.add(article);
 		} // For
 		} catch (ServerCommunicationError e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

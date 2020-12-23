@@ -6,7 +6,6 @@ package application;
 import application.news.Article;
 import application.news.Categories;
 import application.news.User;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
@@ -15,7 +14,7 @@ import javafx.scene.image.Image;
 /**
  *This class is used to represent an article when it is editing
  * This class is needed to develop NewsEditController
- * @author Ã�ngelLucas
+ * @author Ã�ngelLucas & AndreaB-EIT
  *
  */
 class ArticleEditModel {
@@ -23,9 +22,6 @@ class ArticleEditModel {
 	private Article original;
 	//Reference to modified article
 	private Article edited;
-	
-	/*private String wasHTMLBody;
-	private String wasHTMLAbstract; */
 
 	/**
 	 * It is a flag used to indicate that exists updates for the article
@@ -69,51 +65,26 @@ class ArticleEditModel {
 	private void addedChangeListener(){
  	 this.edited.abstractTextProperty().addListener(
 				 (observable, oldvalue, newvalue) -> {
-					 System.out.println("Changed " + oldvalue + " to " + newvalue);
-					 if(!this.bModified) {
-						 System.out.println("This was the first edit!");
-					 }
 				 	this.bModified = true;
 				 });
  	this.edited.bodyTextProperty().addListener(
  			(observable, oldvalue, newvalue) -> {
- 				//
-				 System.out.println("Changed " + oldvalue + " to " + newvalue);
-				 if(!this.bModified) {
-					 System.out.println("This was the first edit!");
-				 }
 				 this.bModified = true;
 			 });
  	/*this.edited.isPublishProperty().addListener(
 			 (observable, oldvalue, newvalue) -> {
-					 System.out.println("Changed " + oldvalue + " to " + newvalue);
-					 if(!this.bModified) {
-						 System.out.println("This was the first edit!");
-					 }
 					 this.bModified = true;
 				 });*/
  	this.edited.isDeletedProperty().addListener(
  			(observable, oldvalue, newvalue) -> {
-				 System.out.println("Changed " + oldvalue + " to " + newvalue);
-				 if(!this.bModified) {
-					 System.out.println("This was the first edit!");
-				 }
 				 this.bModified = true;
 			 });
  	this.edited.titleProperty().addListener(
  			(observable, oldvalue, newvalue) -> {
-				 System.out.println("Changed " + oldvalue + " to " + newvalue);
-				 if(!this.bModified) {
-					 System.out.println("This was the first edit!");
-				 }
 				 this.bModified = true;
 			 });
  	this.edited.subtitleProperty().addListener(
  			(observable, oldvalue, newvalue) -> {
-				 System.out.println("Changed " + oldvalue + " to " + newvalue);
-				 if(!this.bModified) {
-					 System.out.println("This was the first edit!");
-				 }
 				 this.bModified = true;
 			 });
 	}

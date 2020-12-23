@@ -3,21 +3,11 @@
  */
 package application;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.util.function.Predicate;
-
-import javax.json.JsonObject;
-
 import application.news.Article;
 import application.news.Categories;
 import application.news.User;
 import application.utils.JsonArticle;
-import application.utils.exceptions.ErrorMalFormedArticle;
-import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -25,23 +15,16 @@ import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.web.WebEngine;
@@ -50,9 +33,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
-import javafx.util.Callback;
 import serverConection.ConnectionManager;
-import serverConection.exceptions.AuthenticationError;
 
 /**
  * @author Ã�ngelLucas & AndreaB-EIT
@@ -102,6 +83,7 @@ public class NewsReaderController {
 		
 	}
 	
+	// This function is used to manage the width of the articles' list container
 	private double getLongestTitleSize(ObservableList<Article> list) {
 		double longest = 0;
 		for (int i = 0; i < list.size(); i++) {
@@ -109,21 +91,20 @@ public class NewsReaderController {
 				longest = list.get(i).getTitle().length();
 			}
 		}
-		//return Math.min(longest*8, 512);
+		//return Math.min(longest*8, 512); // This can be uncommented and used to limit the maximum size
 		return longest*8;
 	}
 
+	// This function gets the data from the server and updates the UI
 	private void getData() {
-		//TODO retrieve data and update UI
 		ObservableList<Article> list = this.newsReaderModel.getArticles();
 		
-		if (this.usr != null) this.newsReaderModel.retrieveData(); // CHANGE THIS AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH
-		//this.newsReaderModel.retrieveData();
+		if (this.usr != null) this.newsReaderModel.retrieveData(); // AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 		
 		this.articlesList.setMinWidth(this.getLongestTitleSize(list));
 		this.articlesList.setItems(list);
 		
-		// Manage logged in or not
+		// Update the UI based on the user being logged in or not
 		if (!this.newsReaderModel.getConnectionManager().isLoggedOK()) {
 			this.choiceDelete.setVisible(false);
 			this.choiceEdit.setVisible(false);
@@ -174,6 +155,7 @@ public class NewsReaderController {
 		this.getData();
 	}
 	
+	// This function manages opening the article editor in the right way
 	void manageAction(String action) {
 		Scene parentScene = ((Stage) this.anchorPane.getScene().getWindow()).getScene();
     	
@@ -193,6 +175,7 @@ public class NewsReaderController {
 			Stage stage = new Stage();
 			stage.initOwner(parentWindow);
 			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.initStyle(StageStyle.UNDECORATED); // With this, no upper bar with the X and the other icons
 			stage.setScene(scene);
 
 			// // Get the selected model
@@ -203,24 +186,23 @@ public class NewsReaderController {
 			// To clear and undo changes when the user closes the window
 			stage.setOnCloseRequest(ev -> controller.exitForm());
 			
+			// The managing itself happens here
 			switch (action) {
-			case "new":
+			case "new": // In this case the user is not logged and they're creating a new article
 				controller.setArticle(null);
 				break;
-			case "newlogged":
+			case "newlogged": // In this case the user is logged and they're creating a new article
 				// Pass the data
 				controller.setUsr(this.getUsr());
 				controller.setArticle(null);
 				alert = new Alert(AlertType.INFORMATION, "Article created successfully!");
 				alert.setTitle("Article created");
-				alert.showAndWait();
 				break;
-			case "edit":
+			case "edit": // In this case the user is not logged and they're editing an existing article
 				controller.setArticle(this.selected);
 				break;
-			case "editlogged":
+			case "editlogged": // In this case the user is logged and they're editing an existing article
 				controller.setUsr(this.getUsr());
-				// ID checker?
 				controller.setArticle(this.selected);
 				break;
 			}
@@ -231,25 +213,27 @@ public class NewsReaderController {
 			stage.setTitle("Article editor");
 			stage.showAndWait();
 			
-			if (controller.isChanged() && action.equals("editlogged")) {
+			// The following manages the list of articles after a logged user updates an article
+			if (controller.isChanged() && (action.equals("editlogged") || action.equals("newlogged"))) {
 				Article edited = controller.getArticle();
-				int index = this.articlesList.getItems().indexOf(this.selected);
+				int index = (this.selected != null ? this.articlesList.getItems().indexOf(this.selected) : 0);
 				this.articlesList.getItems().add(index, edited);
 				this.articlesList.getItems().remove(index+1);
 				this.articlesList.refresh();
-				this.selected = edited;
-				this.webView.getEngine().loadContent(edited.getAbstractText());
-				if (edited.getImageData() != null) {
-					NewsReaderController.this.imageView.setImage(edited.getImageData());
-				} else {
-					NewsReaderController.this.imageView.setImage(new Image("images/noImage.jpg"));
-				}
     		}
 			
+			// Deselecting the item
+			this.selected = null;
+			this.webView.getEngine().loadContent("");
+			this.imageView.setVisible(false);
+			this.articlesList.getSelectionModel().select(-1);
+			
+			// This fixes removing the "All" category for the editor
 			if (!(this.newsReaderModel.getCategories().get(0).toString().equals("All"))) {
 				this.newsReaderModel.getCategories().add(0, Categories.ALL);
 				this.categoriesList.getSelectionModel().select(Categories.ALL);
 			}
+			
 		} catch (IOException e) {
 			alert = new Alert(AlertType.ERROR, "There was an error with the article, sorry");
 			alert.setTitle("Error with the article");
@@ -258,6 +242,7 @@ public class NewsReaderController {
 		}
 	}
 	
+	// This function handles opening the article details page
 	@FXML
 	void onMoreDetails(ActionEvent event) {
 		if(this.selected == null) {
@@ -276,14 +261,13 @@ public class NewsReaderController {
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			
-			// Create the second stage
+			// Create the separate stage
 			Window parentWindow = parentScene.getWindow();
 			Stage stage = new Stage();
 			stage.initOwner(parentWindow);
 			stage.initModality(Modality.NONE);
 			stage.setScene(scene);
 
-			// // Get the selected model
 			ArticleDetailsController controller = loader.<ArticleDetailsController>getController();
 
 			controller.setUsr(this.newsReaderModel.getConnectionManager().isLoggedOK() ? this.getUsr() : null);
@@ -296,11 +280,12 @@ public class NewsReaderController {
 			stage.show();
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
+	// The two following functions are what "start" the main manageAction
+	// This one handles new articles
 	@FXML
 	void onNew() {
 		if (!this.newsReaderModel.getConnectionManager().isLoggedOK()) {
@@ -311,6 +296,7 @@ public class NewsReaderController {
 		
 	}
 	
+	// This one handles editing articles
 	@FXML
 	void onEdit() {
 		if (!this.newsReaderModel.getConnectionManager().isLoggedOK()) {
@@ -320,9 +306,11 @@ public class NewsReaderController {
 		}
 	}
 	
+	// This functions handles articles deletion
 	@FXML
 	void onDelete() {
 		Alert followAlert;
+		// Asking for confirmation is very important when deleting an article
 		Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete the selected article?", ButtonType.YES, ButtonType.NO);
 		alert.setTitle("Delete \"" + this.selected.getTitle() + "\"?");
 		if (alert.showAndWait().get() == ButtonType.YES) {
@@ -340,6 +328,7 @@ public class NewsReaderController {
 		
 	}
 	
+	// This functions loads a local .news file
 	@FXML
 	void onLocalFile(ActionEvent event) {
 		
@@ -365,7 +354,7 @@ public class NewsReaderController {
 			String path ="saveNews//"+ filename;
 			
 			if (path != null && !(path.equals("")) && !(path.equals("saveNews//"))) {
-				
+				// Opening the file with editing purposes
 				this.selected = JsonArticle.jsonToArticle(JsonArticle.readFile(path));
 				this.onEdit();
 			} else {
@@ -380,6 +369,7 @@ public class NewsReaderController {
 		
 	}
 	
+	// This function handles the login window, and the window (see LoginController and LoginModel) will handle the login process
 	@FXML
     void onLogin() {
 		
@@ -394,14 +384,13 @@ public class NewsReaderController {
 				Scene scene = new Scene(root);
 				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 				
-				// Create the second stage
 				Window parentWindow = parentScene.getWindow();
 				Stage stage = new Stage();
 				stage.initOwner(parentWindow);
 				stage.initModality(Modality.APPLICATION_MODAL);
+				stage.initStyle(StageStyle.UNDECORATED);
 				stage.setScene(scene);
 				
-				// // Get the selected model
 				LoginController controller = loader.<LoginController>getController();
 				controller.setConnectionManager(this.newsReaderModel.getConnectionManager());
 				
@@ -430,6 +419,8 @@ public class NewsReaderController {
     	assert choiceDelete != null : "fx:id=\"choiceDelete\" was not injected: check your FXML file 'NewsReader.fxml'.";
     	assert choiceLogin != null : "fx:id=\"choiceLogin\" was not injected: check your FXML file 'NewsReader.fxml'.";
     	assert btn_moreDetails != null : "fx:id=\"moreDetails\" was not injected: check your FXML file 'NewsReader.fxml'.";
+    	
+    	// Handling the "selected" item
     	this.btn_moreDetails.setDisable(true);
 		this.choiceDelete.setDisable(true);
 		this.choiceEdit.setDisable(true);
@@ -453,14 +444,14 @@ public class NewsReaderController {
     				} else {
     					NewsReaderController.this.imageView.setImage(new Image("images/noImage.jpg"));
     				}
-    			}
-    			else {
+    			} else {
     				webEngine.loadContent("");
     			}
     		}
         });
     	
-    	filteredItems = new FilteredList<>(this.newsReaderModel.getArticles(), article -> true);
+    	// Filtering the list of articles by the selected category
+    	filteredItems = new FilteredList<Article>(this.newsReaderModel.getArticles(), article -> true);
     	this.categoriesList.setItems(this.newsReaderModel.getCategories());
 		this.categoriesList.getSelectionModel().select(Categories.ALL);
 		this.categoriesList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Categories>() {
@@ -482,10 +473,10 @@ public class NewsReaderController {
 	            NewsReaderController.this.choiceEdit.setDisable(true);
 	            NewsReaderController.this.webView.getEngine().loadContent("");
 			};
-			
 		});
 	}
 	
+	// This function closes the form
 	@FXML
 	void bye() {
 		Stage stage = (Stage) anchorPane.getScene().getWindow();

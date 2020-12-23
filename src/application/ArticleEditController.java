@@ -5,21 +5,13 @@ package application;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
-
 import javax.json.JsonObject;
-
-import org.jsoup.Jsoup;
 
 import application.news.Article;
 import application.news.Categories;
 import application.news.User;
 import application.utils.JsonArticle;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -32,22 +24,18 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Labeled;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.web.HTMLEditor;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
-import javafx.stage.WindowEvent;
 import serverConection.ConnectionManager;
 import serverConection.exceptions.ServerCommunicationError;
 
@@ -325,17 +313,24 @@ public class ArticleEditController {
 			alert = new Alert(AlertType.INFORMATION, "Article created successfully!");
 			alert.setTitle("Article created");
 			
+			// Default category value
+			this.categoriesList.getSelectionModel().select(Categories.ECONOMY);
+			this.editingArticle.setCategory(Categories.ECONOMY);
+			
 			this.imageView.setImage(new Image("images/noImage.jpg"));
 			this.btn_saveToFile.setDisable(true);
+			this.btn_saveAndBack.setDisable(true); // The title is null at first
 			this.editingArticle.titleProperty().addListener(
 		   			 (observable, oldvalue, newValue) -> {
-		   				 if (newValue != null && !(newValue.equals(""))) {
+		   				if (newValue != null && !(newValue.equals(""))) {
 		   					 // If the title exists, it's possible to save the article to a file
-		   					 this.btn_saveToFile.setDisable(false);
-		   				 } else {
+		   					this.btn_saveToFile.setDisable(false);
+	   						this.btn_saveAndBack.setDisable(false);
+		   				} else {
 		   					this.btn_saveToFile.setDisable(true);
-		   				 }
-	   				 });
+	   					 	this.btn_saveAndBack.setDisable(true);
+		   				}
+	   				});
 		}
 	}
 	

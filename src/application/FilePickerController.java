@@ -25,6 +25,7 @@ public class FilePickerController {
 		stage.close();
     }
     
+    // This function closes the picker without saving any path
     @FXML
     void onCancel(ActionEvent event) {
     	path.setText("");
@@ -32,6 +33,7 @@ public class FilePickerController {
 		stage.close();
     }
     
+    // This function shows the file chooser and filters for only .news elements
     @FXML
     void onFileDialog(ActionEvent event) {
     	FileChooser fileChooser = new FileChooser();
@@ -40,6 +42,7 @@ public class FilePickerController {
     	         new ExtensionFilter("News Files", "*.news"));
     	 Window parentStage = ((Node) event.getSource()).getScene().getWindow();
     	 File selectedFile = fileChooser.showOpenDialog(parentStage);
+    	 
     	 //Getting the URI for the local file
     	 if (selectedFile != null) {
     		 Path filepath = FileSystems.getDefault().getPath(
@@ -53,6 +56,7 @@ public class FilePickerController {
 
     }
     
+    // This is called from the NewsReaderController to get the selected file's path
     String getFilePath(){
     	return path.getText();
     }

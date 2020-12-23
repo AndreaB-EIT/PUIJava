@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -72,7 +73,11 @@ public class ArticleDetailsController {
 		this.title.setText(this.article.getTitle());
 		this.subtitle.setText(this.article.getSubtitle());
 		this.category .setText(this.article.getCategory());
-		this.image.setImage(this.article.getImageData());
+		if (article.getImageData() != null) {
+			this.image.setImage(article.getImageData());
+		} else {
+			this.image.setImage(new Image("images/noImage.jpg"));
+		}
 		WebEngine engine = this.text.getEngine();
 		engine.loadContent(this.isAbstract ? this.article.getAbstractText() : this.article.getBodyText());
 	}
