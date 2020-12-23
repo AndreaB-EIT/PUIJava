@@ -99,7 +99,7 @@ public class NewsReaderController {
 	private void getData() {
 		ObservableList<Article> list = this.newsReaderModel.getArticles();
 		
-		if (this.usr != null) this.newsReaderModel.retrieveData(); // AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+		this.newsReaderModel.retrieveData();
 		
 		this.articlesList.setMinWidth(this.getLongestTitleSize(list));
 		this.articlesList.setItems(list);

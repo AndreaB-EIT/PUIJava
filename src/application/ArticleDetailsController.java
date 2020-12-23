@@ -61,7 +61,7 @@ public class ArticleDetailsController {
 		if (this.usr == null) {
 			this.userID.setText("");
 		} else {
-			this.userID.setText("Logged in with user ID: " + this.usr.getIdUser());
+			this.userID.setText("Logged in with user ID: " + this.usr.getLogin());
 		}
 	}
 

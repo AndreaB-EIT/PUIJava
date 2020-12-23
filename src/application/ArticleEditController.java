@@ -12,6 +12,7 @@ import application.news.Categories;
 import application.news.User;
 import application.utils.JsonArticle;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -220,16 +221,13 @@ public class ArticleEditController {
 		
 		/* The following code returned a weird error: https://imgur.com/a/MT0u5DH
 		 * 
-		 * FilteredList<Categories> tmp = new FilteredList<Categories>(categories);
-		this.categories = tmp.setPredicate(category -> {
-			return true;
-		});*/
+		 */
 		
-		// This removes the "All" from the "choosable" categories for an article in the editor
-		if (categories.get(0).toString().equals("All")) {
-			categories.remove(0);
-		}
-		this.categoriesList.setItems(categories);
+		// The "All" category can't be picked as a suitable category in the editor
+		FilteredList<Categories> tmp = new FilteredList<Categories>(categories);
+		tmp.setPredicate(category -> category != Categories.ALL);
+
+		this.categoriesList.setItems(tmp);
 	}
 	
 	// This function finds the currently selected category to show in the ComboBox
@@ -278,9 +276,11 @@ public class ArticleEditController {
 	    	
 	    	this.subtitleBox.setText(this.getArticle().getSubtitle());
 	    	this.categoriesList.getSelectionModel().select(findCategory());
-	    	if(article.getImageData() != null) {
-	    		this.imageView.setImage(article.getImageData());
-	    	}
+	    	if (article.getImageData() != null) {
+				this.imageView.setImage(article.getImageData());
+			} else {
+				this.imageView.setImage(new Image("images/noImage.jpg"));
+			}
 	    	
 	    	// Managing which content editor is being used and seen
 	    	if (this.isHTML) {

@@ -39,8 +39,8 @@ public class Main extends Application {
 			Properties prop = buildServerProperties();
 			ConnectionManager connection = new ConnectionManager(prop);
 			//Connecting as public (anonymous) for your group
-			// connection.setAnonymousAPIKey("DEV_TEAM_4414"); // Putting the group API key filters the articles
-			connection.setAnonymousAPIKey(""/*Put your group API Key here*/);
+			connection.setAnonymousAPIKey("DEV_TEAM_4414"); // Putting the group API key filters the articles
+			// connection.setAnonymousAPIKey(""/*Put your group API Key here*/);
 		//Login without login form:
 			//	connection.login("Reader2", "reader2"); //User: Reader2 and password "reader2" 
 		//    User user = new User ("Reader2", 
