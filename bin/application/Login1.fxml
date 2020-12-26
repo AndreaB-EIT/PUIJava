@@ -11,12 +11,13 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="294.0" prefWidth="404.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.LoginController">
+<AnchorPane fx:id="anchorPane" prefHeight="294.0" prefWidth="404.0" styleClass="borders" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.LoginController">
    <children>
       <ImageView fx:id="imgPreview" fitHeight="100.0" fitWidth="133.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@default.png" />
+            <Image url="@../images/EITLogo.png" />
          </image>
       </ImageView>
       <VBox AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="120.0">
@@ -28,7 +29,7 @@
                <children>
                   <AnchorPane>
                      <children>
-                        <Label text="Login:" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                        <Label style="-fx-background-radius: 2px;" text="Login:" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
                         <TextField fx:id="usernameBox" prefWidth="200.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="5.0" />
                      </children>
                   </AnchorPane>
@@ -52,20 +53,26 @@
       </VBox>
       <HBox alignment="TOP_RIGHT" layoutX="49.0" prefHeight="64.0" prefWidth="305.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="49.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="210.0">
          <children>
-            <ToggleButton mnemonicParsing="false" onAction="#toggleMask" text="Mask/Unmask">
+            <ToggleButton mnemonicParsing="false" onAction="#toggleMask" prefHeight="36.0" prefWidth="108.0" style="-fx-background-color: #8181F7;" text="Mask/Unmask" textFill="#f2f2f2">
                <HBox.margin>
-                  <Insets bottom="8.0" right="34.0" top="8.0" />
+                  <Insets bottom="8.0" right="40.0" />
                </HBox.margin>
+               <font>
+                  <Font size="14.0" />
+               </font>
             </ToggleButton>
-            <Button alignment="TOP_RIGHT" mnemonicParsing="false" onAction="#closeWindow" text="Cancel">
+            <Button onAction="#closeWindow" prefHeight="35.0" prefWidth="65.0" style="-fx-background-color: #8181F7;" text="Cancel" textFill="#f2f2f2">
+               <font>
+                  <Font size="14.0" />
+               </font>
                <HBox.margin>
-                  <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                  <Insets right="20.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#startLogin" text="Login">
-               <HBox.margin>
-                  <Insets bottom="8.0" left="8.0" top="8.0" />
-               </HBox.margin>
+            <Button onAction="#startLogin" prefHeight="35.0" prefWidth="65.0" style="-fx-background-color: #8181F7;" text="Login" textFill="#f2f2f2">
+               <font>
+                  <Font size="14.0" />
+               </font>
             </Button>
          </children>
       </HBox>

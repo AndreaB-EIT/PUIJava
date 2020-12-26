@@ -9,11 +9,10 @@ package application;
  *
  */
 public enum AppScenes {
- LOGIN("Login.fxml"), READER("NewsReader.fxml"), 
- NEWS_DETAILS ("ArticleDetails.fxml"),
- EDITOR("ArticleEdit.fxml"), ADMIN("AdminNews.fxml"), FILE_PICKER("FilePicker.fxml") // Added my own file picker window layout
-		 ,IMAGE_PICKER("ImagePicker.fxml")
-		 /*,IMAGE_PICKER("ImagePickerMaterailDesign.fxml")*/; 
+ LOGIN("Login1.fxml"), READER("NewsReader.fxml"), 
+ NEWS_DETAILS ("ArticleDetails1.fxml"),
+ EDITOR("ArticleEdit1.fxml"), ADMIN("AdminNews.fxml"), FILE_PICKER("FilePicker.fxml") // Added my own file picker window layout
+		 ,IMAGE_PICKER("ImagePicker.fxml"); 
  private String fxmlFile;
  
  private AppScenes (String file){

@@ -6,6 +6,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
@@ -28,6 +30,9 @@ public class LoginController {
 	
 	@FXML
 	private AnchorPane anchorPane;
+	
+	@FXML
+	private ImageView imgPreview;
 	
 	private User loggedUsr = null;
 
@@ -87,6 +92,7 @@ public class LoginController {
 		assert passwordBox != null : "fx:id=\"passwordBox\" was not injected: check your FXML file 'Login.fxml'.";
         assert clearPasswordBox != null : "fx:id=\"clearPasswordBox\" was not injected: check your FXML file 'Login.fxml'.";
         assert anchorPane != null : "fx:id=\"anchorPane\" was not injected: check your FXML file 'Login.fxml'.";
+        assert imgPreview != null : "fx:id=\"imgPreview\" was not injected: check your FXML file 'Login.fxml'.";
 	}
 	
 	// This function closes the window

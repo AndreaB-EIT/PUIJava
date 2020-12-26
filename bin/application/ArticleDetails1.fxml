@@ -10,8 +10,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.web.WebView?>
 
-<AnchorPane prefHeight="410.0" prefWidth="550.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ArticleDetailsController">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="410.0" prefWidth="550.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ArticleDetailsController">
    <children>
+      <Button fx:id="btn_AbstractBody" alignment="TOP_RIGHT" layoutX="431.0" layoutY="374.0" mnemonicParsing="false" onAction="#onAbstractBody" style="-fx-background-color: #8181F7;" text="Abstract/Body" textFill="#f2f2f2" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="8.0" />
+      <Button mnemonicParsing="false" onAction="#onBack" style="-fx-background-color: #8181F7;" text="Back" textFill="#f2f2f2" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" />
       <HBox AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="8.0">
          <children>
             <ImageView fx:id="image" fitHeight="100.0" fitWidth="133.0" pickOnBounds="true" preserveRatio="true">
@@ -87,23 +89,5 @@
             <Label fx:id="showingBA" text="Showing: Body" />
          </children>
       </VBox>
-      <HBox AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
-         <children>
-            <AnchorPane prefWidth="530.0">
-               <children>
-                  <HBox alignment="TOP_RIGHT" AnchorPane.rightAnchor="0.0">
-                     <children>
-                        <Button fx:id="btn_AbstractBody" alignment="TOP_RIGHT" mnemonicParsing="false" onAction="#onAbstractBody" text="Abstract/Body" />
-                     </children>
-                  </HBox>
-                  <HBox AnchorPane.leftAnchor="0.0">
-                     <children>
-                        <Button mnemonicParsing="false" onAction="#onBack" text="Back" />
-                     </children>
-                  </HBox>
-               </children>
-            </AnchorPane>
-         </children>
-      </HBox>
    </children>
 </AnchorPane>

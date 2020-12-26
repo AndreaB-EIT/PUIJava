@@ -152,7 +152,9 @@ public class NewsReaderController {
 		
 		this.usr = usr;
 		//Reload articles
-		this.getData();
+		if (this.getUsr() != null) {
+			this.getData();
+		}
 	}
 	
 	// This function manages opening the article editor in the right way
@@ -177,8 +179,9 @@ public class NewsReaderController {
 			stage.initModality(Modality.APPLICATION_MODAL);
 			stage.initStyle(StageStyle.UNDECORATED); // With this, no upper bar with the X and the other icons
 			stage.setScene(scene);
+			stage.setTitle("Article editor");
 
-			// // Get the selected model
+			// Get the selected model
 			ArticleEditController controller = loader.<ArticleEditController>getController();
 			controller.setConnectionManager(this.newsReaderModel.getConnectionManager());
 			controller.sendCategories(this.newsReaderModel.getCategories());
@@ -208,9 +211,6 @@ public class NewsReaderController {
 			}
 			
 			// Open the new stage and wait for user response
-			stage.setX(parentScene.getX());
-			stage.setY(parentScene.getY());
-			stage.setTitle("Article editor");
 			stage.showAndWait();
 			
 			// The following manages the list of articles after a logged user updates an article
@@ -267,6 +267,9 @@ public class NewsReaderController {
 			stage.initOwner(parentWindow);
 			stage.initModality(Modality.NONE);
 			stage.setScene(scene);
+			stage.setTitle("Details - " + this.selected.getTitle());
+			stage.setMinHeight(root.minHeight(-1));
+			stage.setMinWidth(root.minWidth(-1));
 
 			ArticleDetailsController controller = loader.<ArticleDetailsController>getController();
 
@@ -274,9 +277,6 @@ public class NewsReaderController {
 			
 			controller.setArticle(this.selected);
 
-			stage.setX(parentScene.getX());
-			stage.setY(parentScene.getY());
-			stage.setTitle("Details - " + this.selected.getTitle());
 			stage.show();
 			
 		} catch (IOException e) {
@@ -345,6 +345,7 @@ public class NewsReaderController {
 			stage.initOwner(parentStage);
 			stage.setScene(scene);
 			stage.initModality(Modality.APPLICATION_MODAL);
+			stage.initStyle(StageStyle.UNDECORATED);
 			stage.showAndWait();
 			
 			String raw = controller.getFilePath();
@@ -390,17 +391,16 @@ public class NewsReaderController {
 				stage.initModality(Modality.APPLICATION_MODAL);
 				stage.initStyle(StageStyle.UNDECORATED);
 				stage.setScene(scene);
+				stage.setTitle("Login");
 				
 				LoginController controller = loader.<LoginController>getController();
 				controller.setConnectionManager(this.newsReaderModel.getConnectionManager());
 				
 				// Open the new stage and wait for user response
-				stage.setX(parentScene.getX());
-				stage.setY(parentScene.getY());
-				stage.setTitle("Login");
 				stage.showAndWait();
 				
 				this.setUsr(controller.getLoggedUsr());
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

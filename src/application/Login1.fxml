@@ -13,11 +13,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="294.0" prefWidth="404.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.LoginController">
+<AnchorPane fx:id="anchorPane" prefHeight="294.0" prefWidth="404.0" styleClass="borders" stylesheets="@application.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.LoginController">
    <children>
       <ImageView fx:id="imgPreview" fitHeight="100.0" fitWidth="133.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@default.png" />
+            <Image url="@../images/EITLogo.png" />
          </image>
       </ImageView>
       <VBox AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="120.0">
@@ -61,7 +61,7 @@
                   <Font size="14.0" />
                </font>
             </ToggleButton>
-            <Button fx:id="btnAccept" onAction="#onAccept" prefHeight="35.0" prefWidth="65.0" style="-fx-background-color: #8181F7;" text="Cancel" textFill="#f2f2f2">
+            <Button onAction="#closeWindow" prefHeight="35.0" prefWidth="65.0" style="-fx-background-color: #8181F7;" text="Cancel" textFill="#f2f2f2">
                <font>
                   <Font size="14.0" />
                </font>
@@ -69,7 +69,7 @@
                   <Insets right="20.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="btnAccept1" onAction="#onAccept" prefHeight="35.0" prefWidth="65.0" style="-fx-background-color: #8181F7;" text="Login" textFill="#f2f2f2">
+            <Button onAction="#startLogin" prefHeight="35.0" prefWidth="65.0" style="-fx-background-color: #8181F7;" text="Login" textFill="#f2f2f2">
                <font>
                   <Font size="14.0" />
                </font>
