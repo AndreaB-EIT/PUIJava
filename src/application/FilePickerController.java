@@ -49,7 +49,7 @@ public class FilePickerController {
     	//Getting the URI for the local file
     	if (selectedFile != null) {
     		Path filepath = FileSystems.getDefault().getPath(
-    			 selectedFile.getAbsolutePath());
+    			 selectedFile.getCanonicalPath());
     		
     		String path = filepath.toUri().toString();
     		

@@ -287,7 +287,7 @@ public class ConnectionManager {
 	 * @throws ServerCommunicationError
 	 */
 	public int saveArticle(Article article) throws ServerCommunicationError{
-		try{
+		try {
 			String parameters =  "";
 			String request = serviceUrl + "article";
 

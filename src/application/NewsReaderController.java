@@ -208,18 +208,36 @@ public class NewsReaderController {
 				controller.setUsr(this.getUsr());
 				controller.setArticle(this.selected);
 				break;
+			case "newfromfilelogged":
+				controller.setUsr(this.getUsr());
+				controller.setArticle(this.selected);
+				break;
 			}
 			
 			// Open the new stage and wait for user response
 			stage.showAndWait();
 			
 			// The following manages the list of articles after a logged user updates an article
-			if (controller.isChanged() && (action.equals("editlogged") || action.equals("newlogged"))) {
+			if (controller.isChanged() && action.equals("editlogged")) {
 				Article edited = controller.getArticle();
-				int index = (this.selected != null ? this.articlesList.getItems().indexOf(this.selected) : 0);
+				
+				int index = 0;
+				if (this.selected != null) {
+					for (int i = 0; i < this.newsReaderModel.getArticles().size(); i++) {
+						if (this.newsReaderModel.getArticles().get(i).getTitle().equals(this.selected.getTitle())) {
+							index = i;
+							i = this.newsReaderModel.getArticles().size();
+						}
+					}
+				}
+				
 				this.articlesList.getItems().add(index, edited);
 				this.articlesList.getItems().remove(index+1);
 				this.articlesList.refresh();
+    		} else if (controller.isChanged() && (action.equals("newlogged") || action.equals("newfromfilelogged"))) {
+    			Article newArticle = controller.getArticle();
+    			this.articlesList.getItems().add(0, newArticle);
+    			this.articlesList.refresh();
     		}
 			
 			// Deselecting the item
@@ -302,7 +320,19 @@ public class NewsReaderController {
 		if (!this.newsReaderModel.getConnectionManager().isLoggedOK()) {
 			this.manageAction("edit");
 		} else {
-			this.manageAction("editlogged");
+			// Check if the article already exists in the list and act accordingly
+			boolean alreadyExists = false;
+			for (int i = 0; i < this.articlesList.getItems().size(); i++) {
+				if (this.newsReaderModel.getArticles().get(i).getTitle().equals(this.selected.getTitle())) {
+					alreadyExists = true;
+					i = this.newsReaderModel.getArticles().size();
+				}
+			}
+			if (alreadyExists) {
+				this.manageAction("editlogged");
+			} else {
+				this.manageAction("newfromfilelogged");
+			}
 		}
 	}
 	
@@ -316,6 +346,7 @@ public class NewsReaderController {
 		if (alert.showAndWait().get() == ButtonType.YES) {
 			
 			Article toDelete = this.selected;
+			
 			this.newsReaderModel.getArticles().remove(this.newsReaderModel.getArticles().indexOf(this.selected));
 			this.newsReaderModel.deleteArticle(toDelete);
 			
@@ -352,10 +383,14 @@ public class NewsReaderController {
 			
 			// Get just the filename
 			String filename = raw.substring(raw.lastIndexOf("/") + 1, raw.length());
-			String path ="saveNews//"+ filename;
+			
+			String sane = filename.replaceAll("[%20]+", " ");
+			
+			String path ="saveNews//"+ sane;
 			
 			if (path != null && !(path.equals("")) && !(path.equals("saveNews//"))) {
 				// Opening the file with editing purposes
+				
 				this.selected = JsonArticle.jsonToArticle(JsonArticle.readFile(path));
 				this.onEdit();
 			} else {

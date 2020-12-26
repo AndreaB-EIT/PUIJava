@@ -325,7 +325,9 @@ public class ArticleEditController {
 		   				if (newValue != null && !(newValue.equals(""))) {
 		   					 // If the title exists, it's possible to save the article to a file
 		   					this.btn_saveToFile.setDisable(false);
-	   						this.btn_saveAndBack.setDisable(false);
+		   					if (this.usr != null) {
+	   							this.btn_saveAndBack.setDisable(false);
+		   					}
 		   				} else {
 		   					this.btn_saveToFile.setDisable(true);
 	   					 	this.btn_saveAndBack.setDisable(true);
@@ -376,9 +378,12 @@ public class ArticleEditController {
 			this.editingArticle.bodyTextProperty().set(this.editingArticle.getBodyText());
 		}
 		
-		this.send();
+		if(!(this.send())) {
+			alert = new Alert(AlertType.ERROR, "We couldn't send the article to the server, sorry! If you see it in the list, it's just a local version due to an error");
+			alert.setTitle("Error");
+		}
 		
-		alert.show();
+		alert.show();			
 		
 		Stage stage = (Stage) this.anchorPane.getScene().getWindow();
     	stage.close();
@@ -442,7 +447,7 @@ public class ArticleEditController {
 			this.content_text.setText(this.editingArticle.getAbstractText());
 		}
 		this.editingAbstract = !this.editingAbstract;
-		this.showingBA.setText(this.editingAbstract ? "Showing: Abstract" : "Showing: Body");
+		this.showingBA.setText(this.editingAbstract ? "Editing: Abstract" : "Editing: Body");
 	}
 	
 	@FXML
@@ -460,6 +465,6 @@ public class ArticleEditController {
     	assert content_text != null : "fx:id=\"content_text\" was not injected: check your FXML file 'NewsReader.fxml'.";
     	assert anchorPane != null : "fx:id=\"anchorPane\" was not injected: check your FXML file 'NewsReader.fxml'.";
     	
-    	this.showingBA.setText(this.editingAbstract ? "Showing: Abstract" : "Showing: Body");
+    	this.showingBA.setText(this.editingAbstract ? "Editing: Abstract" : "Editing: Body");
 	}
 }
