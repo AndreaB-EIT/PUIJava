@@ -216,14 +216,8 @@ public class ArticleEditController {
 	}
 	
 	// This is used in the NewsReaderController to "send" the categories to this ArticleEditController
-	public void sendCategories(ObservableList<Categories> categories) {
-		// Internet says the exception thrown here is a Java 8 bug
-		
-		/* The following code returned a weird error: https://imgur.com/a/MT0u5DH
-		 * 
-		 */
-		
-		// The "All" category can't be picked as a suitable category in the editor
+	public void sendCategories(ObservableList<Categories> categories) {		
+		// The "All" category can't be picked as a suitable category in the editor, so we filter it out
 		FilteredList<Categories> tmp = new FilteredList<Categories>(categories);
 		tmp.setPredicate(category -> category != Categories.ALL);
 
