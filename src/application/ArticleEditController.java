@@ -177,7 +177,7 @@ public class ArticleEditController {
 		} else {
 			try {
 				this.editingArticle.commit(); // Saving changes to the article
-				this.connection.saveArticle(this.getArticle()); // Sending the updated article to the server
+				this.editingArticle.original.setIdArticle(this.connection.saveArticle(this.getArticle())); // Sending the updated article to the server
 				return true;
 			} catch (ServerCommunicationError e) {
 				e.printStackTrace();

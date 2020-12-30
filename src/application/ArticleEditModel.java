@@ -19,7 +19,7 @@ import javafx.scene.image.Image;
  */
 class ArticleEditModel {
 	//Reference to original article. Useful for undo changes
-	private Article original;
+	public Article original;
 	//Reference to modified article
 	private Article edited;
 
