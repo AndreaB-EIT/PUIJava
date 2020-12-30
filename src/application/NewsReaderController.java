@@ -8,6 +8,7 @@ import application.news.Article;
 import application.news.Categories;
 import application.news.User;
 import application.utils.JsonArticle;
+import application.utils.exceptions.ErrorMalFormedArticle;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -217,8 +218,17 @@ public class NewsReaderController {
 			// Open the new stage and wait for user response
 			stage.showAndWait();
 			
+			// Since the requirements don't say anything about sending again an article from a file being considered an edit or a new file,
+			// I decided to treat it like a new file
+			if (controller.isChanged()) {				
+				Article newArticle = controller.getArticle();
+				this.articlesList.getItems().add(0, newArticle);
+				this.articlesList.refresh();
+			}
+			
+			// The following code is old and tried to manage the "editing an existing article with a file"
 			// The following manages the list of articles after a logged user updates an article
-			if (controller.isChanged() && action.equals("editlogged")) {
+			/*if (controller.isChanged() && action.equals("editlogged")) {
 				Article edited = controller.getArticle();
 				
 				int index = 0;
@@ -238,7 +248,7 @@ public class NewsReaderController {
     			Article newArticle = controller.getArticle();
     			this.articlesList.getItems().add(0, newArticle);
     			this.articlesList.refresh();
-    		}
+    		}*/
 			
 			// Deselecting the item
 			this.selected = null;
@@ -269,6 +279,8 @@ public class NewsReaderController {
 			alert.show();
 			return;
 		}
+		System.out.println(this.selected.getIdUser());
+		
 		Scene parentScene = ((Stage) this.anchorPane.getScene().getWindow()).getScene();
     	
     	FXMLLoader loader = new FXMLLoader(getClass().getResource(
@@ -306,6 +318,7 @@ public class NewsReaderController {
 	// This one handles new articles
 	@FXML
 	void onNew() {
+		
 		if (!this.newsReaderModel.getConnectionManager().isLoggedOK()) {
 			this.manageAction("new");
 		} else {
@@ -320,8 +333,9 @@ public class NewsReaderController {
 		if (!this.newsReaderModel.getConnectionManager().isLoggedOK()) {
 			this.manageAction("edit");
 		} else {
+			this.manageAction("editlogged");
 			// Check if the article already exists in the list and act accordingly
-			boolean alreadyExists = false;
+			/*boolean alreadyExists = false;
 			for (int i = 0; i < this.articlesList.getItems().size(); i++) {
 				if (this.newsReaderModel.getArticles().get(i).getTitle().equals(this.selected.getTitle())) {
 					alreadyExists = true;
@@ -332,7 +346,7 @@ public class NewsReaderController {
 				this.manageAction("editlogged");
 			} else {
 				this.manageAction("newfromfilelogged");
-			}
+			}*/
 		}
 	}
 	
@@ -390,9 +404,33 @@ public class NewsReaderController {
 			
 			if (path != null && !(path.equals("")) && !(path.equals("saveNews//"))) {
 				// Opening the file with editing purposes
+				try {
+					Article loaded = JsonArticle.jsonToArticle(JsonArticle.readFile(path));
+					if ((loaded.getIdUser() == -1) || (this.getUsr() != null && this.getUsr().getIdUser() == loaded.getIdUser())) {
+						// If the article doesn't belong to any logged user then anyone can edit it
+						// If the article belongs to the logged user then the logger user can edit it
+						// loaded.setIdUser(this.getUsr().getIdUser());
+						this.selected = loaded;
+						this.onEdit();
+						
+					} else if ((this.getUsr() != null && this.getUsr().getIdUser() != loaded.getIdUser()) || (this.getUsr() == null && loaded.getIdUser() != -1)) {
+						// If the article has an owner then only the logged owner can access it
+						Alert alert = new Alert(AlertType.ERROR, "You have no authorization to access this file as you're not the author, sorry");
+						alert.setTitle("No authorization");
+						alert.show();
+					} else {
+						// This is just for safety but this should never be reached
+						Alert alert = new Alert(AlertType.ERROR, "There was an error with your file, sorry");
+						alert.setTitle("Error");
+						alert.show();
+					}
+				} catch (ErrorMalFormedArticle e) {
+					Alert alert = new Alert(AlertType.ERROR, "The article seems to be malformed and cannot be loaded, sorry");
+					alert.setTitle("Malformed article");
+					alert.show();
+				}
 				
-				this.selected = JsonArticle.jsonToArticle(JsonArticle.readFile(path));
-				this.onEdit();
+				
 			} else {
 				Alert alert = new Alert(AlertType.WARNING, "No file selected");
 				alert.setTitle("No file");
