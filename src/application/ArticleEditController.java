@@ -220,7 +220,6 @@ public class ArticleEditController {
 		// The "All" category can't be picked as a suitable category in the editor, so we filter it out
 		FilteredList<Categories> tmp = new FilteredList<Categories>(categories);
 		tmp.setPredicate(category -> category != Categories.ALL);
-
 		this.categoriesList.setItems(tmp);
 	}
 	
@@ -371,42 +370,15 @@ public class ArticleEditController {
 			this.editingArticle.abstractTextProperty().set(this.editingArticle.getAbstractText());
 			this.editingArticle.bodyTextProperty().set(this.editingArticle.getBodyText());
 		}
-
-		/*boolean alreadyExists = false;
-		for (int i = 0; i < this.connection.getArticles().size(); i++) {
-			if (this.connection.getArticles().get(i).getTitle().equals(this.editingArticle.getTitle())) {
-				alreadyExists = true;
-				i = this.connection.getArticles().size();
-			}
+		
+		if(!(this.send())) {
+			alert = new Alert(AlertType.ERROR, "We couldn't send the article to the server, sorry! If you see it in the list, it's just a local version due to an error");
+			alert.setTitle("Error");
 		}
-		if (alreadyExists) {
-			Alert alert = new Alert(AlertType.CONFIRMATION, "An existing article with the same title already exists. Do you want to overwrite it?", ButtonType.YES, ButtonType.NO);
-			alert.setTitle("Overwrite existing article \"" + this.editingArticle.getTitle() + "\"?");
-			if (alert.showAndWait().get() == ButtonType.YES) {
-				if(!(this.send())) {
-					alert = new Alert(AlertType.ERROR, "We couldn't send the article to the server, sorry! If you see it in the list, it's just a local version due to an error");
-					alert.setTitle("Error");
-				}
-				alert.show();
-				
-				Stage stage = (Stage) this.anchorPane.getScene().getWindow();
-				stage.close();
-				
-			} else {
-				Alert followAlert = new Alert(AlertType.WARNING, "Please change your title");
-				followAlert.setTitle("Change the title");
-				followAlert.show();
-			}
-		} else {*/
-			if(!(this.send())) {
-				alert = new Alert(AlertType.ERROR, "We couldn't send the article to the server, sorry! If you see it in the list, it's just a local version due to an error");
-				alert.setTitle("Error");
-			}
-			alert.show();
-			
-			Stage stage = (Stage) this.anchorPane.getScene().getWindow();
-			stage.close();
-		// }
+		alert.show();
+		
+		Stage stage = (Stage) this.anchorPane.getScene().getWindow();
+		stage.close();
 	}
 	
 	// This function saves the article to a file

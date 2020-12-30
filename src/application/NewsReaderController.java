@@ -93,7 +93,7 @@ public class NewsReaderController {
 			}
 		}
 		//return Math.min(longest*8, 512); // This can be uncommented and used to limit the maximum size
-		return longest*8;
+		return longest*8; // This has to be commented if the line above was to be uncommented
 	}
 
 	// This function gets the data from the server and updates the UI
@@ -132,6 +132,8 @@ public class NewsReaderController {
 			alert.setTitle("Logged in");
 			alert.show();
 		}
+		
+		this.categoriesList.getSelectionModel().select(Categories.ALL);
 	}
 
 	/**
@@ -219,22 +221,27 @@ public class NewsReaderController {
 			
 			// Finding the edited article if an article was edited (returns -1 if the article was new)
 			int index = -1;
-			for (int i = 0; i < this.newsReaderModel.getArticles().size(); i++) {
-				if (this.newsReaderModel.getArticles().get(i).getIdArticle() == controller.getArticle().getIdArticle()) {
-					index = i;
-					i = this.newsReaderModel.getArticles().size();
+			if (controller.getArticle() != null) {
+				for (int i = 0; i < this.newsReaderModel.getArticles().size(); i++) {
+					if (this.newsReaderModel.getArticles().get(i).getIdArticle() == controller.getArticle().getIdArticle()) {
+						index = i;
+						i = this.newsReaderModel.getArticles().size();
+					}
 				}
 			}
 			
 			// Decide whether to add the item to the list (new article) or to replace the old one with the new one (edit article)
+			Article article = controller.getArticle();
 			if (controller.isChanged() && index != -1) {
-				Article edited = controller.getArticle();
-				this.articlesList.getItems().add(index, edited);
-				this.articlesList.getItems().remove(index+1);
+				this.newsReaderModel.getArticles().add(index, article);
+				this.newsReaderModel.getArticles().remove(index+1);
+				this.articlesList.setItems(this.newsReaderModel.getArticles());
+				this.categoriesList.getSelectionModel().select(Categories.ALL);
 				this.articlesList.refresh();
 			} else if (controller.isChanged() && index == -1) {
-    			Article newArticle = controller.getArticle();
-    			this.articlesList.getItems().add(0, newArticle);
+    			this.newsReaderModel.getArticles().add(0, article);
+    			this.articlesList.setItems(this.newsReaderModel.getArticles());
+    			this.categoriesList.getSelectionModel().select(Categories.ALL);
     			this.articlesList.refresh();
     		}
 			
@@ -243,12 +250,9 @@ public class NewsReaderController {
 			this.webView.getEngine().loadContent("");
 			this.imageView.setVisible(false);
 			this.articlesList.getSelectionModel().select(-1);
-			
-			// This fixes removing the "All" category for the editor
-			if (!(this.newsReaderModel.getCategories().get(0).toString().equals("All"))) {
-				this.newsReaderModel.getCategories().add(0, Categories.ALL);
-				this.categoriesList.getSelectionModel().select(Categories.ALL);
-			}
+			this.choiceDelete.setDisable(true);
+			this.choiceEdit.setDisable(true);
+			this.btn_moreDetails.setDisable(true);
 			
 		} catch (IOException e) {
 			alert = new Alert(AlertType.ERROR, "There was an error with the article, sorry");
@@ -267,7 +271,6 @@ public class NewsReaderController {
 			alert.show();
 			return;
 		}
-		System.out.println(this.selected.getIdUser());
 		
 		Scene parentScene = ((Stage) this.anchorPane.getScene().getWindow()).getScene();
     	
@@ -382,9 +385,8 @@ public class NewsReaderController {
 				try {
 					Article loaded = JsonArticle.jsonToArticle(JsonArticle.readFile(path));
 					if ((loaded.getIdUser() == -1) || (this.getUsr() != null && this.getUsr().getIdUser() == loaded.getIdUser())) {
-						// If the article doesn't belong to any logged user then anyone can edit it
-						// If the article belongs to the logged user then the logger user can edit it
-						// loaded.setIdUser(this.getUsr().getIdUser());
+						// If a local article doesn't belong to any logged user then anyone can edit it
+						// If the article belongs to the logged user then the logger user can edit its
 						this.selected = loaded;
 						this.onEdit();
 						
@@ -520,6 +522,7 @@ public class NewsReaderController {
 	            NewsReaderController.this.choiceDelete.setDisable(true);
 	            NewsReaderController.this.choiceEdit.setDisable(true);
 	            NewsReaderController.this.webView.getEngine().loadContent("");
+	            NewsReaderController.this.articlesList.getSelectionModel().select(-1);
 			};
 		});
 	}
